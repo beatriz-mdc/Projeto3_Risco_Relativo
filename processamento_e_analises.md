@@ -1,3 +1,7 @@
+# Etapas do projeto
+
+***1. Processamento e preparação da base de dados***
+
 Identificar e tratar valores nulos
 tabela clientes_info
 7199 last_month_salary

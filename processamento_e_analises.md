@@ -175,6 +175,26 @@ WHERE total_emprestimos IS NULL
 
 Fazer uma análise exploratória
 
+Agrupar dados de acordo com variáveis ​​categóricas
+
+As variáveis categóricas foram agrupadas conforme as tabelas abaixo:
+
+![image](https://github.com/user-attachments/assets/393e0f2e-e05b-47fd-8fcd-d10394874234)
+
+Ver variáveis ​​categóricas
+
+As variáveis categóricas foram visualizadas em gráficos de barra conforme abaixo: 
+
+![image](https://github.com/user-attachments/assets/de7246b9-48e2-437d-9ae8-16ae09c3c8f0)
+
+Aplicar medidas de tendência central
+
+Foram calculadas média e mediana para as variáveis numéricas e resumidas nas tabelas abaixo:
+
+![image](https://github.com/user-attachments/assets/8e5bb4a8-d005-4cdc-ab06-73313813c5d0)
+
+Ver distribuição
+
 
 
 

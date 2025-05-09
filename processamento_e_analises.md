@@ -183,20 +183,29 @@ As variáveis categóricas foram agrupadas conforme as tabelas abaixo:
 
 Ver variáveis ​​categóricas
 
-As variáveis categóricas foram visualizadas em gráficos de barra conforme abaixo: 
+As variáveis categóricas foram visualizadas em gráficos de barras conforme abaixo: 
 
 ![image](https://github.com/user-attachments/assets/de7246b9-48e2-437d-9ae8-16ae09c3c8f0)
 
 Aplicar medidas de tendência central
 
-Foram calculadas média e mediana para as variáveis numéricas e resumidas nas tabelas abaixo:
+Foram calculadas média e mediana para variáveis numéricas e resumidas nas tabelas abaixo:
 
-![image](https://github.com/user-attachments/assets/8e5bb4a8-d005-4cdc-ab06-73313813c5d0)
+![image](https://github.com/user-attachments/assets/216a9829-96b4-49ad-8196-3f2d9577af11)
 
 Ver distribuição
 
+As distribuições foram analisadas através de histogramas desenvolvidos em python no google colab:
 
+[Histogramas](https://colab.research.google.com/drive/1Rt7ojChYG2ZsJia042dfdm3RNwqil2AE?usp=sharing) 
 
+Aplicar medidas de dispersão (desvio padrão)
+
+Foram calculados o desvio padrão das variáveis numéricas:
+
+![image](https://github.com/user-attachments/assets/fa3dd5f6-fb8c-4948-a80f-61070f296a71)
+
+Calcular quartis, decis ou percentis
 
 
 

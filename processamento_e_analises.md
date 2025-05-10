@@ -207,7 +207,44 @@ Foram calculados o desvio padrão das variáveis numéricas:
 
 Calcular quartis, decis ou percentis
 
+Os quartis foram calculados a partir da seguinte query:
 
+WITH quartis AS (
+  SELECT
+    user_id,
+    NTILE(4) OVER (ORDER BY age) AS age_quartil,
+    NTILE(4) OVER (ORDER BY last_month_salary) AS salario_quartil,
+    NTILE(4) OVER (ORDER BY more_90_days_overdue) AS atraso_quartil,
+    NTILE(4) OVER (ORDER BY using_lines_not_secured_personal_assets) AS limite_quartil,
+    NTILE(4) OVER (ORDER BY debt_ratio) AS endividamento_quartil,
+    NTILE(4) OVER (ORDER BY total_emprestimos) AS emprestimos_quartil,
+  FROM
+    `projeto-3-459118.risco_relativo.tabelas_2`
+)
+SELECT
+  a.*,
+  b.age_quartil,
+  b.salario_quartil,
+  b.atraso_quartil,
+  b.limite_quartil,
+  b.endividamento_quartil,
+  b.emprestimos_quartil
+FROM
+  `projeto-3-459118.risco_relativo.tabelas_2` a
+JOIN
+  quartis b ON a.user_id = b.user_id
+  
+Calcular correlação entre variáveis ​​numéricas
+
+
+
+
+
+
+
+
+
+  
 
 
 

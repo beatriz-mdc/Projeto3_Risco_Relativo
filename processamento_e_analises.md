@@ -209,10 +209,11 @@ Calcular quartis, decis ou percentis
 
 Os quartis foram calculados a partir da seguinte query:
 
+CREATE OR REPLACE TABLE `projeto-3-459118.risco_relativo.tabelas_2` AS
 WITH quartis AS (
   SELECT
     user_id,
-    NTILE(4) OVER (ORDER BY age) AS age_quartil,
+    NTILE(4) OVER (ORDER BY age) AS idade_quartil,
     NTILE(4) OVER (ORDER BY last_month_salary) AS salario_quartil,
     NTILE(4) OVER (ORDER BY more_90_days_overdue) AS atraso_quartil,
     NTILE(4) OVER (ORDER BY using_lines_not_secured_personal_assets) AS limite_quartil,
@@ -222,8 +223,8 @@ WITH quartis AS (
     `projeto-3-459118.risco_relativo.tabelas_2`
 )
 SELECT
-  a.*,
-  b.age_quartil,
+  a.* EXCEPT(number_dependents),
+  b.idade_quartil,
   b.salario_quartil,
   b.atraso_quartil,
   b.limite_quartil,
@@ -233,48 +234,21 @@ FROM
   `projeto-3-459118.risco_relativo.tabelas_2` a
 JOIN
   quartis b ON a.user_id = b.user_id
-  
-Também foram definidos os pontos de corte para cada quartil a partir dos valores máximo e mínimo de cada variável.
-Abaixo um exemplo da query utilizada:
-
-WITH dados_com_quartil AS (
-  SELECT
-    *,
-    NTILE(4) OVER (ORDER BY age) AS idade_quartil
-  FROM
-    `projeto-3-459118.risco_relativo.tabelas_2`
-)
-
-SELECT
-  idade_quartil,
-  MIN(age) AS valor_minimo,
-  MAX(age) AS valor_maximo
-FROM
-  dados_com_quartil
-GROUP BY
-  idade_quartil
-ORDER BY
-  idade_quartil;
-
-- Cortes idade
-![image](https://github.com/user-attachments/assets/024becaa-1e92-4476-8952-41628d76bbea)
-
-- Cortes salário
-![image](https://github.com/user-attachments/assets/6f8c0dff-da57-4b5c-9ec5-bb21e49ae620)
-
-- Cortes atraso
-![image](https://github.com/user-attachments/assets/733cc42e-91d4-419c-afed-56c41871152c)
-
-- Cortes limite
-![image](https://github.com/user-attachments/assets/1b0175b9-87a0-4dbc-801d-aebc9e686635)
-
-- Cortes endividamento
-![image](https://github.com/user-attachments/assets/a12e3d32-d14f-4767-bba5-f6567a263d60)
-
-- Cortes empréstimo
-![image](https://github.com/user-attachments/assets/657d2755-0f24-4312-b045-51dadb333b12)
 
 Calcular correlação entre variáveis ​​numéricas
+
+Foram feitas as seguintes correlações:
+
+SELECT  
+CORR (last_month_salary, total_emprestimos) as correlacao,
+CORR (age, total_emprestimos) as correlacao,
+CORR (last_month_salary, using_lines_not_secured_personal_assets) as correlacao,
+CORR (more_90_days_overdue, total_emprestimos) as correlacao,
+FROM `projeto-3-459118.risco_relativo.tabelas_2`
+
+Aplicar técnica de análise
+
+Calcular risco relativo
 
 
 

@@ -234,6 +234,46 @@ FROM
 JOIN
   quartis b ON a.user_id = b.user_id
   
+Também foram definidos os pontos de corte para cada quartil a partir dos valores máximo e mínimo de cada variável.
+Abaixo um exemplo da query utilizada:
+
+WITH dados_com_quartil AS (
+  SELECT
+    *,
+    NTILE(4) OVER (ORDER BY age) AS idade_quartil
+  FROM
+    `projeto-3-459118.risco_relativo.tabelas_2`
+)
+
+SELECT
+  idade_quartil,
+  MIN(age) AS valor_minimo,
+  MAX(age) AS valor_maximo
+FROM
+  dados_com_quartil
+GROUP BY
+  idade_quartil
+ORDER BY
+  idade_quartil;
+
+- Cortes idade
+![image](https://github.com/user-attachments/assets/024becaa-1e92-4476-8952-41628d76bbea)
+
+- Cortes salário
+![image](https://github.com/user-attachments/assets/6f8c0dff-da57-4b5c-9ec5-bb21e49ae620)
+
+- Cortes atraso
+![image](https://github.com/user-attachments/assets/733cc42e-91d4-419c-afed-56c41871152c)
+
+- Cortes limite
+![image](https://github.com/user-attachments/assets/1b0175b9-87a0-4dbc-801d-aebc9e686635)
+
+- Cortes endividamento
+![image](https://github.com/user-attachments/assets/a12e3d32-d14f-4767-bba5-f6567a263d60)
+
+- Cortes empréstimo
+![image](https://github.com/user-attachments/assets/657d2755-0f24-4312-b045-51dadb333b12)
+
 Calcular correlação entre variáveis ​​numéricas
 
 

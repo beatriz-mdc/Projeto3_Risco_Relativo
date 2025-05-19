@@ -250,6 +250,145 @@ Aplicar técnica de análise
 
 Calcular risco relativo
 
+O risco relativo foi calculado para os quartis de cada variável.
+Abaixo as queries utilizadas e os principais resultados encontrados:
+
+Idade
+Q1 = 1.4010416666666667 - MAU PAGADOR
+WITH resumo AS (
+  SELECT
+    idade_quartil,
+    COUNT(*) AS total,
+    SUM(CASE WHEN default_flag = 1 THEN 1 ELSE 0 END) AS eventos
+  FROM `projeto-3-459118.risco_relativo.tabelas_2`
+  GROUP BY idade_quartil
+),
+calculado AS (
+  SELECT
+    MAX(CASE WHEN idade_quartil = 1 THEN eventos / total END) AS risco_expostos,
+    MAX(CASE WHEN idade_quartil > 1 THEN eventos / total END) AS risco_nao_expostos
+  FROM resumo
+)
+SELECT
+  risco_expostos,
+  risco_nao_expostos,
+  SAFE_DIVIDE(risco_expostos, risco_nao_expostos) AS risco_relativo
+FROM calculado;
+
+salario
+Q1 = 1.5123456790123457 - MAU PAGADOR
+WITH resumo AS (
+  SELECT
+    salario_quartil,
+    COUNT(*) AS total,
+    SUM(CASE WHEN default_flag = 1 THEN 1 ELSE 0 END) AS eventos
+  FROM `projeto-3-459118.risco_relativo.tabelas_2`
+  GROUP BY salario_quartil
+),
+calculado AS (
+  SELECT
+    MAX(CASE WHEN salario_quartil = 1 THEN eventos / total END) AS risco_expostos,
+    MAX(CASE WHEN salario_quartil > 1 THEN eventos / total END) AS risco_nao_expostos
+  FROM resumo
+)
+SELECT
+  risco_expostos,
+  risco_nao_expostos,
+  SAFE_DIVIDE(risco_expostos, risco_nao_expostos) AS risco_relativo
+FROM calculado;
+
+endividamento
+Q3 = 1.260727798906933 - MAU PAGADOR
+WITH resumo AS (
+  SELECT
+    endividamento_quartil,
+    COUNT(*) AS total,
+    SUM(CASE WHEN default_flag = 1 THEN 1 ELSE 0 END) AS eventos
+  FROM `projeto-3-459118.risco_relativo.tabelas_2`
+  GROUP BY endividamento_quartil
+),
+calculado AS (
+  SELECT
+    MAX(CASE WHEN endividamento_quartil = 3 THEN eventos / total END) AS risco_expostos,
+    MAX(CASE WHEN endividamento_quartil IN (1,2,4) THEN eventos / total END) AS risco_nao_expostos
+  FROM resumo
+)
+SELECT
+  risco_expostos,
+  risco_nao_expostos,
+  SAFE_DIVIDE(risco_expostos, risco_nao_expostos) AS risco_relativo
+FROM calculado;
+
+atraso
+Q4 = 28.553210390194533 > MAU PAGADOR
+
+WITH resumo AS (
+  SELECT
+    atraso_quartil,
+    COUNT(*) AS total,
+    SUM(CASE WHEN default_flag = 1 THEN 1 ELSE 0 END) AS eventos
+  FROM `projeto-3-459118.risco_relativo.tabelas_2`
+  GROUP BY atraso_quartil
+),
+calculado AS (
+  SELECT
+    MAX(CASE WHEN atraso_quartil = 4 THEN eventos / total END) AS risco_expostos,
+    MAX(CASE WHEN atraso_quartil IN (1,2,3) THEN eventos / total END) AS risco_nao_expostos
+  FROM resumo
+)
+SELECT
+  risco_expostos,
+  risco_nao_expostos,
+  SAFE_DIVIDE(risco_expostos, risco_nao_expostos) AS risco_relativo
+FROM calculado;
+
+limite
+Q4 = 20.140195504406798 > MAU PAGADOR
+
+WITH resumo AS (
+  SELECT
+    limite_quartil,
+    COUNT(*) AS total,
+    SUM(CASE WHEN default_flag = 1 THEN 1 ELSE 0 END) AS eventos
+  FROM `projeto-3-459118.risco_relativo.tabelas_2`
+  GROUP BY limite_quartil
+),
+calculado AS (
+  SELECT
+    MAX(CASE WHEN limite_quartil = 4 THEN eventos / total END) AS risco_expostos,
+    MAX(CASE WHEN limite_quartil IN (1,2,3) THEN eventos / total END) AS risco_nao_expostos
+  FROM resumo
+)
+SELECT
+  risco_expostos,
+  risco_nao_expostos,
+  SAFE_DIVIDE(risco_expostos, risco_nao_expostos) AS risco_relativo
+FROM calculado;
+
+emprestimos
+Q1 = 1.6139240506329116 > MAU PAGADOR
+
+WITH resumo AS (
+  SELECT
+    emprestimos_quartil,
+    COUNT(*) AS total,
+    SUM(CASE WHEN default_flag = 1 THEN 1 ELSE 0 END) AS eventos
+  FROM `projeto-3-459118.risco_relativo.tabelas_2`
+  GROUP BY emprestimos_quartil
+),
+calculado AS (
+  SELECT
+    MAX(CASE WHEN emprestimos_quartil = 1 THEN eventos / total END) AS risco_expostos,
+    MAX(CASE WHEN emprestimos_quartil > 1 THEN eventos / total END) AS risco_nao_expostos
+  FROM resumo
+)
+SELECT
+  risco_expostos,
+  risco_nao_expostos,
+  SAFE_DIVIDE(risco_expostos, risco_nao_expostos) AS risco_relativo
+FROM calculado;
+
+Aplicar segmentação por Score
 
 
 

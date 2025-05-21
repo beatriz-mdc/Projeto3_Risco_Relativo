@@ -390,8 +390,101 @@ FROM calculado;
 
 Aplicar segmentação por Score
 
+O score dos clientes foi construído com base nos quartis encontrados no tópico anterior, onde possuiam um alto valor de risco relativo, ou seja, maior propensão a ser um mau pagador. Dessa forma, foram criados dummies, variáveis binárias, onde o quartil encontrado equivalia a 1 e os demais igual a 0. Foram criados 6 dummies, um para cada tipo de quartil calculado, e, posteriormente, os valores foram somados, assim gerando a nota de cada cliente.
+Abaixo a query utilizada:
 
+CREATE OR REPLACE TABLE `projeto-3-459118.risco_relativo.tabelas_2` AS
+WITH dummies AS (
+SELECT
+user_id,
+IF (idade_quartil = 1, 1, 0) as dummy_idade,
+IF (salario_quartil = 1, 1, 0) as dummy_salario,
+IF (atraso_quartil = 4, 1, 0) as dummy_atraso,
+IF (limite_quartil = 4, 1, 0) as dummy_limite,
+IF (endividamento_quartil = 3, 1, 0) as dummy_endividamento,
+IF (emprestimos_quartil = 1, 1, 0) as dummy_emprestimo
+FROM `projeto-3-459118.risco_relativo.tabelas_2`
 
+)
+
+SELECT
+a.*,
+b.dummy_atraso + b.dummy_emprestimo + b.dummy_endividamento + b.dummy_idade + b.dummy_limite + b.dummy_salario as score
+FROM `projeto-3-459118.risco_relativo.tabelas_2` a
+
+JOIN
+
+dummies b on a.user_id = b.user_id
+
+O score calculado corresponde ao intervalo de 1 a 6. Para definir o ponto de corte dessa escala, ou seja, a partir de qual nota o cliente pode ser considerado um mau pagador, foi utilizado python no google colab. Abaixo o link com oprompt utilizado com base na tabela desenvolvida em SQL.
+
+import numpy as np
+import pandas as pd
+from sklearn.metrics import confusion_matrix, roc_curve
+
+df = pd.read_csv('score.csv')  # substitua pelo nome do seu arquivo
+print(df.head())
+
+# Exemplo de dados: df com colunas 'score' (1 a 6) e 'default_flag' (0 ou 1)
+# df = pd.DataFrame({'score': [...], 'default_flag': [...]})
+
+# Vamos testar todos os pontos de corte possíveis entre 1 e 6
+cutoffs = np.arange(1, 6)
+results = []
+
+for cutoff in cutoffs:
+    # Classificamos como mau pagador se score >= cutoff
+    df['pred'] = (df['score'] >= cutoff).astype(int)
+
+    tn, fp, fn, tp = confusion_matrix(df['default_flag'], df['pred']).ravel()
+
+    sens = tp / (tp + fn)  # Sensibilidade (Recall para inadimplentes)
+    spec = tn / (tn + fp)  # Especificidade
+
+    youden_j = sens + spec - 1
+
+    results.append({'cutoff': cutoff, 'sensibilidade': sens, 'especificidade': spec, 'youden_j': youden_j})
+
+results_df = pd.DataFrame(results)
+
+# Escolha o ponto de corte que maximiza Youden's J
+best_cutoff = results_df.loc[results_df['youden_j'].idxmax()]
+print(f"Melhor ponto de corte: {best_cutoff['cutoff']} com Youden's J = {best_cutoff['youden_j']:.3f}")
+
+O resultado encontrado foi: Melhor ponto de corte: 3.0 com Youden's J = 0.584
+
+Para validar o ponto de corte encontrado foi feita a matriz de confusão. Abaixo seu prompt e resultado:
+
+import pandas as pd
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+cutoff = 3
+
+# Criar a previsão binária usando o ponto de corte
+df['pred'] = (df['score'] >= cutoff).astype(int)
+
+# Calcular a matriz de confusão
+cm = confusion_matrix(df['default_flag'], df['pred'])
+
+# Mostrar a matriz no console
+print("Matriz de Confusão:")
+print(cm)
+
+# Opcional: mostrar a matriz de confusão com labels e visualização gráfica
+disp = ConfusionMatrixDisplay(confusion_matrix=cm,
+                              display_labels=['Bom pagador (0)', 'Inadimplente (1)'])
+disp.plot(cmap=plt.cm.Blues)
+plt.show()
+
+Matriz de Confusão:
+[[28280  6673]
+ [  140   482]]
+
+ ![image](https://github.com/user-attachments/assets/48a27d72-5c5e-4917-bcc0-354e9888a71d)
+
+Dessa forma, foi validado o ponte de corte sendo score ≥ 3 = mau pagador. 
+Com essa nota, a partir da análise da matriz de confusão, é possível acertar uma boa parte dos inadimplentes e também evitar a classificação errada de muitos bons pagadores. Esse ponto de corte é o melhor compromisso entre "perder poucos inadimplentes" e "não bloquear bons clientes".
 
 
 
